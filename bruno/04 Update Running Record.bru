@@ -1,0 +1,32 @@
+meta {
+  name: 04 Update Running Record
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/api/v1/running_records/{{recordId}}
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "running_record": {
+      "distance_meters": 6000,
+      "notes": "Updated to six kilometres, for the latest record"
+    }
+  }
+}
+
+tests {
+  test('updates the running record', function () {
+    expect(res.getStatus()).to.equal(200)
+    expect(res.getBody().distance_meters).to.equal(6000)
+    expect(res.getBody().notes).to.equal('Updated to six kilometres')
+  })
+}

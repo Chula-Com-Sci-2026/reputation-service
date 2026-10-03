@@ -1,0 +1,18 @@
+meta {
+  name: 03 Get Running Record
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/v1/running_records/{{recordId}}
+  body: none
+  auth: none
+}
+
+tests {
+  test('reads the created running record', function () {
+    expect(res.getStatus()).to.equal(200)
+    expect(String(res.getBody().id)).to.equal(String(bru.getEnvVar('recordId')))
+  })
+}

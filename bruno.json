@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Reputation Service - REST",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

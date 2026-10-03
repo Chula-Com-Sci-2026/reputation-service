@@ -1,0 +1,18 @@
+meta {
+  name: 06 Confirm Running Record Deleted
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/api/v1/running_records/{{recordId}}
+  body: none
+  auth: none
+}
+
+tests {
+  test('returns the not-found error envelope', function () {
+    expect(res.getStatus()).to.equal(404)
+    expect(res.getBody().error.code).to.equal('running_record_not_found')
+  })
+}

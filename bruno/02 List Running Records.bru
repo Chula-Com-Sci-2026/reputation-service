@@ -1,0 +1,18 @@
+meta {
+  name: 02 List Running Records
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/v1/running_records
+  body: none
+  auth: none
+}
+
+tests {
+  test('lists running records', function () {
+    expect(res.getStatus()).to.equal(200)
+    expect(res.getBody()).to.be.an('array')
+  })
+}
