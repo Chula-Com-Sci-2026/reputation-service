@@ -1,6 +1,6 @@
 # Reputation Service
 
-Reputation Service is a REST microservice for the **Can't Run Alone** platform. It owns attendance, ratings, reliability, and running-history data produced after a run. This repository currently implements the first Deliverable 3 vertical slice: CRUD operations for a runner's completed-run records.
+Reputation Service is a REST microservice for the **Can't Run Alone** platform. It owns attendance, ratings, reliability, and running-history data produced after a run. The Deliverable 3 running-record CRUD is extended with authenticated ownership, attendance, ratings and history for Deliverable 4.
 
 ## Current scope
 
@@ -14,7 +14,7 @@ The implemented `RunningRecord` resource stores:
 
 Distance and duration must be positive. A runner can have only one record for a particular run.
 
-Planned capabilities such as attendance confirmation, participant ratings, review summaries, organizer reliability, Kafka event handling, and JWT authorization are not implemented yet.
+Attendance confirmation coordinates with Run Scheduling; two confirmations complete the run there. Ratings require confirmed participation in a completed run, forbid self-rating and duplicates, and hide aggregates until three ratings exist. History returns only the authenticated runner's records and totals. Organizer reliability, written reviews and Kafka event handling remain deferred.
 
 ## Technology
 
@@ -39,6 +39,19 @@ Base path: `/api/v1`
 | `GET` | `/up` | Rails health check |
 
 Validation failures use a consistent JSON error envelope and return HTTP `422`. Missing records return HTTP `404`.
+
+## Deliverable 4 integration and tests
+
+Use `../local-integration/README.md` for full startup, local secrets and tests. Set `JWT_SECRET` consistently with Identity and `SCHEDULING_URL` to Run Scheduling. All API operations now require `Authorization: Bearer <token>`; caller-supplied runner IDs cannot override the token subject. The old CRUD examples below require that header, and creating a record requires eligible attendance in a completed run.
+
+Additional endpoints:
+
+- `POST /api/v1/runs/{run_id}/attendance`
+- `POST /api/v1/runs/{run_id}/ratings` with `rateeId`, `punctuality`, `paceAccuracy`, `friendliness`
+- `GET /api/v1/runners/{runner_id}/rating-summary`
+- `GET /api/v1/me/history`
+
+Tests use real PostgreSQL and pre-created test databases, explicitly migrated with `RAILS_ENV=test bin/rails db:migrate` before `RAILS_ENV=test bin/rails test`. Focused controller tests substitute Scheduling responses; the shared full-stack suite tests the real Scheduling collaboration.
 
 ## Run locally
 
