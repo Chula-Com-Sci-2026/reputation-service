@@ -2,6 +2,5 @@
 require "rubygems"
 require "bundler/setup"
 
-ARGV.unshift("--ensure-latest")
-
+# Use the version pinned in Gemfile.lock so new releases do not break CI.
 load Gem.bin_path("brakeman", "brakeman")
