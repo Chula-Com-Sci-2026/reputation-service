@@ -1,10 +1,10 @@
 module Api
   module V1
-    class RunningRecordsController < ApplicationController
+    class RunningRecordsController < AuthenticatedController
       before_action :set_running_record, only: %i[show update destroy]
 
       def index
-        records = RunningRecord.order(occurred_at: :desc)
+        records = RunningRecord.where(runner_id: @runner_id).order(occurred_at: :desc)
         records = records.where(runner_id: params[:runner_id]) if params[:runner_id].present?
 
         render json: records
@@ -15,7 +15,8 @@ module Api
       end
 
       def create
-        running_record = RunningRecord.new(running_record_params)
+        return unless eligible_run(running_record_params[:run_id])
+        running_record = RunningRecord.new(running_record_params.merge(runner_id: @runner_id))
 
         if running_record.save
           render json: running_record, status: :created,
@@ -26,7 +27,8 @@ module Api
       end
 
       def update
-        if @running_record.update(running_record_params)
+        attributes = running_record_params.except(:run_id)
+        if @running_record.update(attributes)
           render json: @running_record
         else
           render_validation_errors(@running_record)
@@ -41,7 +43,7 @@ module Api
       private
 
       def set_running_record
-        @running_record = RunningRecord.find(params[:id])
+        @running_record = RunningRecord.where(runner_id: @runner_id).find(params[:id])
       rescue ActiveRecord::RecordNotFound
         render json: {
           error: {
@@ -53,7 +55,7 @@ module Api
 
       def running_record_params
         params.expect(running_record: %i[
-          run_id runner_id distance_meters duration_seconds occurred_at notes
+          run_id distance_meters duration_seconds occurred_at notes
         ])
       end
 

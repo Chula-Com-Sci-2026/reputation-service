@@ -10,9 +10,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_28_160000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_16_161000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "attendances", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "run_id", null: false
+    t.uuid "runner_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["run_id", "runner_id"], name: "index_attendances_on_run_id_and_runner_id", unique: true
+  end
+
+  create_table "participant_ratings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "run_id", null: false
+    t.uuid "rater_id", null: false
+    t.uuid "ratee_id", null: false
+    t.integer "punctuality", null: false
+    t.integer "pace_accuracy", null: false
+    t.integer "friendliness", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["run_id", "rater_id", "ratee_id"], name: "unique_participant_rating", unique: true
+    t.check_constraint "friendliness >= 1 AND friendliness <= 5", name: "valid_friendliness"
+    t.check_constraint "pace_accuracy >= 1 AND pace_accuracy <= 5", name: "valid_pace_accuracy"
+    t.check_constraint "punctuality >= 1 AND punctuality <= 5", name: "valid_punctuality"
+  end
 
   create_table "running_records", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "run_id", null: false
