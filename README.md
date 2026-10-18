@@ -42,7 +42,7 @@ Validation failures use a consistent JSON error envelope and return HTTP `422`. 
 
 ## Deliverable 4 integration and tests
 
-Use `../local-integration/README.md` for full startup, local secrets and tests. Set `JWT_SECRET` consistently with Identity and `SCHEDULING_URL` to Run Scheduling. All API operations now require `Authorization: Bearer <token>`; caller-supplied runner IDs cannot override the token subject. The old CRUD examples below require that header, and creating a record requires eligible attendance in a completed run.
+Use `../running-buddy-integration/README.md` for full startup, local secrets and tests. Set `JWT_SECRET` consistently with Identity and `SCHEDULING_URL` to Run Scheduling. All API operations now require `Authorization: Bearer <token>`; caller-supplied runner IDs cannot override the token subject. The old CRUD examples below require that header, and creating a record requires eligible attendance in a completed run.
 
 Additional endpoints:
 
