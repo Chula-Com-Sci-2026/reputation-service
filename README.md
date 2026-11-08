@@ -18,7 +18,7 @@ Attendance confirmation coordinates with Run Scheduling; two confirmations compl
 
 ## Technology
 
-- Ruby 3.4.6
+- Ruby 3.4.12
 - Rails 8.1.4 in API-only mode
 - PostgreSQL 16
 - Minitest
