@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       post "runs/:run_id/attendance", to: "reputation#confirm"
       post "runs/:run_id/ratings", to: "reputation#rate"
       get "runners/:runner_id/rating-summary", to: "reputation#summary"
+      get "runners/:runner_id/running-summary", to: "reputation#running_summary"
       get "me/history", to: "reputation#history"
     end
   end

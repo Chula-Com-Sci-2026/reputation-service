@@ -55,6 +55,16 @@ class ReputationTest < ActionDispatch::IntegrationTest
     assert_equal 4, response.parsed_body["rating"]
   end
 
+  test "shares another runner's running totals but not their records" do
+    [ [ 5000, 1800 ], [ 10_000, 3900 ] ].each do |distance, duration|
+      RunningRecord.create!(run_id: SecureRandom.uuid, runner_id: @buddy, distance_meters: distance,
+        duration_seconds: duration, occurred_at: 1.day.ago, notes: "private note")
+    end
+    get "/api/v1/runners/#{@buddy}/running-summary", headers: @headers
+    assert_response :success
+    assert_equal({ "runnerId" => @buddy, "runs" => 2, "totalDistanceMeters" => 15_000, "totalDurationSeconds" => 5700 }, response.parsed_body)
+  end
+
   private
 
   def rating

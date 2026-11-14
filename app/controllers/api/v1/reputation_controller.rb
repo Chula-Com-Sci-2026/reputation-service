@@ -33,6 +33,14 @@ module Api
         render json: { runnerId: params[:runner_id], count: count, rating: average&.round(2), hidden: count < 3 }
       end
 
+      # Another runner's totals only. Their individual records (dates, runs, notes) stay private to
+      # them through `history`.
+      def running_summary
+        records = RunningRecord.where(runner_id: params[:runner_id])
+        render json: { runnerId: params[:runner_id], runs: records.count,
+          totalDistanceMeters: records.sum(:distance_meters), totalDurationSeconds: records.sum(:duration_seconds) }
+      end
+
       def history
         records = RunningRecord.where(runner_id: @runner_id).order(occurred_at: :desc)
         render json: { records: records, totalDistanceMeters: records.sum(:distance_meters), totalDurationSeconds: records.sum(:duration_seconds) }
